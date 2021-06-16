@@ -2,6 +2,7 @@
 ## jmv堆上分配
 
 Buffer.allocate() 分配在jvm heap上
+~~~shell
 Memory                                             used             total            max              usage            GC
 heap                                               1065M            1453M            7097M            15.01%           gc.ps_scavenge.count                                       1
 ps_eden_space                                      16M              125M             2620M            0.64%            gc.ps_scavenge.time(ms)                                    12
@@ -13,9 +14,11 @@ metaspace                                          21M              22M         
 compressed_class_space                             2M               2M               1024M            0.27%
 direct                                             8K               8K               -                100.01%
 mapped                                             0K               0K               -                0.00%
+~~~
 
 ## java进程堆上分配(直接内存)
 
+~~~shell
 Memory                                             used             total            max              usage            GC
 heap                                               38M              301M             7097M            0.55%            gc.ps_scavenge.count                                       1
 ps_eden_space                                      14M              125M             2620M            0.55%            gc.ps_scavenge.time(ms)                                    12
@@ -27,9 +30,11 @@ metaspace                                          21M              22M         
 compressed_class_space                             2M               2M               1024M            0.27%
 direct                                             1024M            1024M            -                100.00%
 mapped                                             0K               0K               -                0.00%
+~~~
 
 ## 查看进程使用的内存(VmRSS)
 
+~~~shell
 [root@catface 7300]# cat status
 Name:	java
 Umask:	0022
@@ -56,3 +61,4 @@ VmRSS:	 1299220 kB
 RssAnon:	 1279640 kB
 RssFile:	   19580 kB
 RssShmem:	       0 kB
+~~~
