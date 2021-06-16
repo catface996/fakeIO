@@ -1,16 +1,29 @@
 package com.io.buffer;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import sun.misc.Unsafe;
 
 @Slf4j
 public class BufferIO {
 
     byte[] context = "abcdefghijklmn".getBytes(StandardCharsets.UTF_8);
+
+    private static Unsafe getUnsafe() {
+        try {
+            Class clazz = Unsafe.class;
+            Field field = clazz.getDeclaredField("theUnsafe");
+            field.setAccessible(true);
+            return (Unsafe)field.get(null);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
     public void whatIsBuffer() {
@@ -82,5 +95,23 @@ public class BufferIO {
             log.info("put buffer:{}", buffer);
         }
     }
+
+    /**
+     * 使用unsafe类分配直接内存
+     * <p>
+     * 注意,Usafe类无法直接使用,需要用反射方式获得
+     *
+     * @throws IOException
+     */
+    @Test
+    public void unSafeAllocateMemory() throws IOException {
+        //Unsafe unsafe = Unsafe.getUnsafe();
+        Unsafe unsafe = getUnsafe();
+        long size = unsafe.allocateMemory(1024 * 1024 * 1024 * 2L);
+        System.out.println(size);
+        System.in.read();
+    }
+
+
 
 }

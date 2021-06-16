@@ -62,3 +62,13 @@ RssAnon:	 1279640 kB
 RssFile:	   19580 kB
 RssShmem:	       0 kB
 ~~~
+
+## 使用UnSafe分配内存
+
+
+## 直接内存分配限制
+
+~~~shell
+## 对UnSafe无效,对DirectByteBuffer 有效
+-XX:MaxDirectMemorySize
+~~~
