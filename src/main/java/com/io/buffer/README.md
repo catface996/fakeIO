@@ -121,3 +121,41 @@ VmExe:	       4 kB
 VmLib:	   20048 kB
 VmPTE:	    1004 kB
 VmSwap:	       0 kB
+~~~
+
+## mapped memory
+
+~~~shell
+## 使用arthas 追踪java进程
+Memory                                             used             total            max              usage            GC
+heap                                               41M              300M             7097M            0.58%            gc.ps_scavenge.count                                       1
+ps_eden_space                                      17M              125M             2620M            0.65%            gc.ps_scavenge.time(ms)                                    17
+ps_survivor_space                                  0K               20992K           20992K           0.00%            gc.ps_marksweep.count                                      1
+ps_old_gen                                         24M              154M             5323M            0.46%            gc.ps_marksweep.time(ms)                                   32
+nonheap                                            30M              30M              -1               97.59%
+code_cache                                         5M               5M               240M             2.35%
+metaspace                                          21M              22M              -1               97.55%
+compressed_class_space                             2M               2M               1024M            0.27%
+direct                                             8K               8K               -                100.01%
+mapped                                             887M             887M             -                100.00%
+~~~
+
+
+## direct的优劣
+
+* 优势
+  * 不收GC影响,空间稳定
+    
+* 劣势
+  * 需要自己申请和释放,溢出等问题难以排查
+    
+## mapped memory和direct memory的区别
+
+direct memory 省去从jvm的heap中copy到java进程中的heap的操作,直接写入到java进程的heap中.
+
+持久化到磁盘或者发送到网卡时,仍旧需要从java进程的内存空间copy到内核的内存空间.
+
+
+mapped memory 直接将文件的page cache(内核空间的内存)映射给java进程的heap空间,java进程可以直接在自己的虚拟地址空间中操作page cache.
+
+当文件要持久化到磁盘时,无需再从java进程的内存空间copy到page cache(内核的内存空间).
