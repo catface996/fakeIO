@@ -132,4 +132,20 @@ public class BufferIO {
         mappedByteBuffer.force();
     }
 
+    @Test
+    public void mappedBuffer2() throws Exception {
+        int ans = Integer.MAX_VALUE / (1024 * 1024);
+        RandomAccessFile raf = new RandomAccessFile("./target/Test3.txt", "rw");
+        FileChannel fc = raf.getChannel();
+        //将test.txt文件所有数据映射到虚拟内存，并只读
+        MappedByteBuffer mappedByteBuffer = fc.map(MapMode.READ_WRITE, 0, Integer.MAX_VALUE);
+        for (int i = 0; i < 1024 * 1024; i++) {
+            mappedByteBuffer.put(context);
+        }
+        mappedByteBuffer.force();
+        System.out.println("Load success.");
+        System.in.read();
+        mappedByteBuffer.force();
+    }
+
 }
