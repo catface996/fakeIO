@@ -1,5 +1,6 @@
 package com.io.buffer;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -36,7 +37,7 @@ public class FileIO {
      * 分配jvm堆上的缓冲区
      */
     @Test
-    public void allocateJvmHeapBuffer() {
+    public void allocateJvmHeapBuffer() throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024 * 1024);
         log.info("init buffer:{}", buffer);
         buffer.put(context);
@@ -49,6 +50,7 @@ public class FileIO {
             log.info("get buffer:{}", buffer);
         }
         buffer.compact();
+        System.in.read();
         log.info("compact buffer:{}", buffer);
         for (int i = 0; i < 5; i++) {
             buffer.put((byte)('o' + i));
