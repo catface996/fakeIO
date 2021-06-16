@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 @Slf4j
-public class FileIO {
+public class BufferIO {
 
     byte[] context = "abcdefghijklmn".getBytes(StandardCharsets.UTF_8);
 
