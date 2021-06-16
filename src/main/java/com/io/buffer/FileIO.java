@@ -62,7 +62,7 @@ public class FileIO {
      * 分配java进程怼上的缓冲区,此堆是内核对进程分配的堆空间,非jvm堆空间
      */
     @Test
-    public void allocateProgressHeapBuffer() {
+    public void allocateProgressHeapBuffer() throws IOException {
         ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * 1024);
         log.info("init buffer:{}", buffer);
         buffer.put(context);
@@ -75,6 +75,7 @@ public class FileIO {
             log.info("get buffer:{}", buffer);
         }
         buffer.compact();
+        System.in.read();
         log.info("compact buffer:{}", buffer);
         for (int i = 0; i < 5; i++) {
             buffer.put((byte)('o' + i));
