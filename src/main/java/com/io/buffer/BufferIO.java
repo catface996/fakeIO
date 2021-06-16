@@ -1,8 +1,12 @@
 package com.io.buffer;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 import java.nio.charset.StandardCharsets;
 
 import lombok.extern.slf4j.Slf4j;
@@ -100,6 +104,8 @@ public class BufferIO {
      * 使用unsafe类分配直接内存
      * <p>
      * 注意,Usafe类无法直接使用,需要用反射方式获得
+     * <p>
+     * unsafe 分配的内存不在direct中体现
      *
      * @throws IOException
      */
@@ -112,6 +118,18 @@ public class BufferIO {
         System.in.read();
     }
 
-
+    @Test
+    public void mappedBuffer() throws Exception {
+        RandomAccessFile raf = new RandomAccessFile("./target/Test2.txt", "rw");
+        FileChannel fc = raf.getChannel();
+        //将test.txt文件所有数据映射到虚拟内存，并只读
+        MappedByteBuffer mappedByteBuffer = fc.map(MapMode.READ_ONLY, 0, fc.size());
+        mappedByteBuffer.load();
+        while (!mappedByteBuffer.isLoaded()) {
+        }
+        System.out.println("Load success.");
+        System.in.read();
+        mappedByteBuffer.force();
+    }
 
 }
