@@ -7,6 +7,9 @@
 ## 查看网络连接
 netstat -natp
 
+## 监控系统调用
+strace -tt -T -v -f  -o strace.log -s 1024 -p 1234
+
 ## 监控tcp连接
 tcpdump -nn -i ens33 port 9090
 
