@@ -54,7 +54,6 @@ public class SocketBase {
         try {
             // 阻塞一下
             System.out.println("准备开始创建socket server,输入任意字符回车继续...");
-            System.in.read();
             // 创建server端
             server = new ServerSocket();
             server.bind(new InetSocketAddress(9090), BACK_LOG);
@@ -64,13 +63,10 @@ public class SocketBase {
             System.out.println("Server up use 9090,准备开始接收数据,输入任意字符回车继续...");
             // 阻塞一下,此时kernel已经开辟好资源,已经完成初次的三次握手,服务端和客户端可以在传输层通信,但不会被业务进程处理
             System.in.read();
-            System.in.read();
             System.out.println("等待客户端连接...");
             while (true) {
-                // 开始接收请求
                 Socket socket = server.accept();
                 log.info("client:{}", socket);
-                // 是否保持心跳检测
                 socket.setKeepAlive(CLI_KEEPALIVE);
                 socket.setOOBInline(CLI_OOB);
                 socket.setReceiveBufferSize(CLI_REC_BUF);
@@ -87,11 +83,11 @@ public class SocketBase {
                         for (; ; ) {
                             int num = reader.read(data);
                             if (num > 0) {
-                                System.out.println("client read some data is :" + num + " val :" + new String(data, 0, num));
+                                log.info("socket:{},data:{}",socket,new String(data, 0, num));
                             } else if (num == 0) {
-                                System.out.println("client readed nothing!");
+                                log.info("socket:{},read nothing!",socket);
                             } else {
-                                System.out.println("client readed -1...");
+                                log.info("socket:{},client readed -1...",socket);
                                 System.in.read();
                                 socket.close();
                                 break;
@@ -100,7 +96,7 @@ public class SocketBase {
                     } catch (Exception e) {
                         log.error("Exception.", e);
                     }
-                });
+                }).start();
             }
         } catch (Exception e) {
             log.error("Exception.", e);
