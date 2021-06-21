@@ -20,7 +20,7 @@ public class SocketBIO {
             ServerSocketChannel ss = ServerSocketChannel.open();
             ss.bind(new InetSocketAddress(9090));
             // 重点  OS  NONBLOCKING!!!
-            // 只让接受客户端  不阻塞
+            // 只让接受客户端 阻塞
             ss.configureBlocking(true);
             while (true) {
                 SocketChannel client = ss.accept();
@@ -28,11 +28,13 @@ public class SocketBIO {
                     System.out.println("accept未获取请求,未建立新的连接");
                 } else {
                     // 重点,建立连接后,设置连接的交互模式是否是阻塞的
+                    // 需要开辟新的线程来完成socket的read,write
                     client.configureBlocking(true);
                     new Thread(() -> {
                         try {
                             ByteBuffer buffer = ByteBuffer.allocateDirect(4096);  //可以在堆里   堆外
                             while (true) {
+                                // client 设置了block,读取时也是同步阻塞的,调用操作系统是
                                 int num = client.read(buffer);
                                 if (num > 0) {
                                     buffer.flip();
@@ -53,4 +55,5 @@ public class SocketBIO {
             e.printStackTrace();
         }
     }
+
 }
