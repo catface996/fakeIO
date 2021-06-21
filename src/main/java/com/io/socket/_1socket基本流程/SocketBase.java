@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,11 +84,14 @@ public class SocketBase {
                         for (; ; ) {
                             int num = reader.read(data);
                             if (num > 0) {
-                                log.info("socket:{},data:{}",socket,new String(data, 0, num));
+                                log.info("socket:{},data:{}", socket, new String(data, 0, num));
+                                byte[] message = "接收数据完成,good!".getBytes(StandardCharsets.UTF_8);
+                                socket.getOutputStream().write(message);
+                                log.info("write success!");
                             } else if (num == 0) {
-                                log.info("socket:{},read nothing!",socket);
+                                log.info("socket:{},read nothing!", socket);
                             } else {
-                                log.info("socket:{},client readed -1...",socket);
+                                log.info("socket:{},client readed -1...", socket);
                                 System.in.read();
                                 socket.close();
                                 break;

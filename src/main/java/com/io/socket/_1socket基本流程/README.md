@@ -8,7 +8,7 @@
 netstat -natp
 
 ## 监控系统调用
-strace -tt -T -v -f -o strace.log -s 1024 -p 1234 -e trace=network
+strace -tt -T -v -f -ff -o out -s 128 -p 1234
 
 ## 监控tcp连接
 tcpdump -nn -i ens33 port 9090
@@ -71,7 +71,8 @@ tcp6       0      0 192.168.162.4:9090      192.168.162.1:53092     ESTABLISHED 
 7839  01:16:32.393146 setsockopt(27, SOL_SOCKET, SO_SNDBUF, [20], 4) = 0 <0.000156>
 7839  01:16:32.393547 setsockopt(27, SOL_SOCKET, SO_LINGER, {l_onoff=1, l_linger=0}, 8) = 0 <0.000041>
 7839  01:16:32.393763 setsockopt(27, SOL_TCP, TCP_NODELAY, [0], 4) = 0 <0.000165>
-## java进程从tcp连接的缓冲区读取数据,第一次读取"1\n",第二次读取"2\n"
+## java进程从tcp连接的缓冲区读取数据,第一次读取"1\n",第二次读取"2\n",recvfrom是非阻塞函数
+## accept()返回新的文件描述符后,可以通过,read(fd)(阻塞读),recv(fd)(非阻塞读)
 7915  01:16:32.511138 recvfrom(27, "1\n", 8192, 0, NULL, NULL) = 2 <1.115948>
 7915  01:16:33.628513 recvfrom(27, "2\n", 8192, 0, NULL, NULL) = 2 <0.700276>
 ~~~
