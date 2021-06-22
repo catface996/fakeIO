@@ -87,6 +87,45 @@ ifconfig
 
 ## tcp 拥塞
 
+## 扩展阅读
+
+~~~ shell
+##man 2 recv
+
+NAME
+       recv, recvfrom, recvmsg - receive a message from a socket
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/socket.h>
+
+       ssize_t recv(int sockfd, void *buf, size_t len, int flags);
+
+       ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
+                        struct sockaddr *src_addr, socklen_t *addrlen);
+
+       ssize_t recvmsg(int sockfd, struct msghdr *msg, int flags);
+
+DESCRIPTION
+       The recv(), recvfrom(), and recvmsg() calls are used to receive messages from a socket.  They may be used to receive data on both connectionless and connection-oriented sockets.  This page first describes common features of all three system
+       calls, and then describes the differences between the calls.
+
+       The only difference between recv() and read(2) is the presence of flags.  With a zero flags argument, recv() is generally equivalent to read(2) (but see NOTES).  Also, the following call
+
+           recv(sockfd, buf, len, flags);
+
+       is equivalent to
+
+           recvfrom(sockfd, buf, len, flags, NULL, NULL);
+
+       All three calls return the length of the message on successful completion.  If a message is too long to fit in the supplied buffer, excess bytes may be discarded depending on the type of socket the message is received from.
+
+       If no messages are available at the socket, the receive calls wait for a message to arrive, unless the socket is nonblocking (see fcntl(2)), in which case the value -1 is returned and the external variable errno is set to EAGAIN or  EWOULD‐
+       BLOCK.  The receive calls normally return any data available, up to the requested amount, rather than waiting for receipt of the full amount requested.
+
+       An application can use select(2), poll(2), or epoll(7) to determine when more data arrives on a socket.
+       
+~~~
 
 
 
