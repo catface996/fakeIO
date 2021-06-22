@@ -45,7 +45,7 @@ for(int i=0;i<canRead.length;i++){
 }
 ~~~
 
-## epoll 系统调用分析EPollSelectorProvider
+## epoll 系统调用分析
 
 ~~~shell
 ## 启动命令,在支持epoll的linux版本中,默认使用的时epoll
@@ -103,7 +103,7 @@ fcntl(12, F_GETFL)                      = 0x2 (flags O_RDWR)
 ###.......
 ~~~
 
-## poll系统调用过程
+## poll系统调用分析
 
 ~~~shell
 ## 启动命令,在支持epoll的linux版本中,默认使用的时epoll
