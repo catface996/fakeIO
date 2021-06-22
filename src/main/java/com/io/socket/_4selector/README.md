@@ -45,9 +45,12 @@ for(int i=0;i<canRead.length;i++){
 }
 ~~~
 
-## epoll 系统调用分析
+## epoll 系统调用分析EPollSelectorProvider
 
 ~~~shell
+## 启动命令,在支持epoll的linux版本中,默认使用的时epoll
+strace -ff -o out  java -Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.EPollSelectorProvider com.io.socket._4selector.SocketSelector 
+
 ## 主进程ID 10226
 ## 创建socket server
 socket(AF_INET6, SOCK_STREAM, IPPROTO_IP) = 6
@@ -99,5 +102,59 @@ accept(6, {sa_family=AF_INET6, sin6_port=htons(52391), sin6_flowinfo=htonl(0), i
 fcntl(12, F_GETFL)                      = 0x2 (flags O_RDWR)
 ###.......
 ~~~
+
+## poll系统调用过程
+
+~~~shell
+## 启动命令,在支持epoll的linux版本中,默认使用的时epoll
+strace -ff -o out  java -Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.PollSelectorProvider com.io.socket._4selector.SocketSelector
+
+## 主进程ID  
+## 创建socket server
+socket(AF_INET6, SOCK_STREAM, IPPROTO_IP) = 6
+setsockopt(6, SOL_IPV6, IPV6_V6ONLY, [0], 4) = 0
+setsockopt(6, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
+## 设置为非阻塞
+fcntl(6, F_GETFL)                       = 0x2 (flags O_RDWR)
+fcntl(6, F_SETFL, O_RDWR|O_NONBLOCK)    = 0
+## 绑定端口,并开启监听
+bind(6, {sa_family=AF_INET6, sin6_port=htons(9090), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::", &sin6_addr), sin6_scope_id=0}, 28) = 0
+listen(6, 50)                           = 0
+getsockname(6, {sa_family=AF_INET6, sin6_port=htons(9090), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::", &sin6_addr), sin6_scope_id=0}, [28]) = 0
+getsockname(6, {sa_family=AF_INET6, sin6_port=htons(9090), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::", &sin6_addr), sin6_scope_id=0}, [28]) = 0
+## 调用poll,如果没有就绪会阻塞,如果有readAble或者acceptAble,返回对应的文件描述符
+poll([{fd=7, events=POLLIN}, {fd=6, events=POLLIN}], 2, -1) = 1 ([{fd=6, revents=POLLIN}])
+## 从acceptAble的文件描述符读取的内容创建新的socket连接.
+accept(6, {sa_family=AF_INET6, sin6_port=htons(56073), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::ffff:192.168.162.1", &sin6_addr), sin6_scope_id=0}, [28]) = 9
+## 设置新建的socket连接为非阻塞模式
+fcntl(9, F_GETFL)                       = 0x2 (flags O_RDWR)
+getsockname(9, {sa_family=AF_INET6, sin6_port=htons(9090), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::ffff:192.168.162.4", &sin6_addr), sin6_scope_id=0}, [28]) = 0
+getsockname(9, {sa_family=AF_INET6, sin6_port=htons(9090), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::ffff:192.168.162.4", &sin6_addr), sin6_scope_id=0}, [28]) = 0
+fcntl(9, F_GETFL)                       = 0x2 (flags O_RDWR)
+fcntl(9, F_SETFL, O_RDWR|O_NONBLOCK)    = 0
+## 调用poll,获取readAble的socket对应的文件描述符(9)
+poll([{fd=7, events=POLLIN}, {fd=6, events=POLLIN}, {fd=9, events=POLLIN}], 3, -1) = 1 ([{fd=9, revents=POLLIN}])
+## 从readAble的socket中读取数据
+read(9, "112233445566\n", 1024)         = 13
+## read非阻塞,无可读取的数据时,返回-1
+read(9, 0x7f1ed80e8600, 1024)           = -1 EAGAIN (Resource temporarily unavailable)
+## 调用poll,继续获取就绪的socket
+poll([{fd=7, events=POLLIN}, {fd=6, events=POLLIN}, {fd=9, events=POLLIN}], 3, -1) = 1 ([{fd=6, revents=POLLIN}])
+## 接收到创建新的socket连接请求
+accept(6, {sa_family=AF_INET6, sin6_port=htons(56074), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::ffff:192.168.162.1", &sin6_addr), sin6_scope_id=0}, [28]) = 11
+fcntl(11, F_GETFL)                      = 0x2 (flags O_RDWR)
+getsockname(11, {sa_family=AF_INET6, sin6_port=htons(9090), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::ffff:192.168.162.4", &sin6_addr), sin6_scope_id=0}, [28]) = 0
+getsockname(11, {sa_family=AF_INET6, sin6_port=htons(9090), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::ffff:192.168.162.4", &sin6_addr), sin6_scope_id=0}, [28]) = 0
+fcntl(11, F_GETFL)                      = 0x2 (flags O_RDWR)
+fcntl(11, F_SETFL, O_RDWR|O_NONBLOCK)   = 0
+## 调用poll,继续获取就绪的socket
+poll([{fd=7, events=POLLIN}, {fd=6, events=POLLIN}, {fd=9, events=POLLIN}, {fd=11, events=POLLIN}], 4, -1) = 1 ([{fd=11, revents=POLLIN}])
+## read非阻塞,读取数据
+read(11, "009988776655\n", 1024)        = 13
+## read非阻塞,无可读取数据,继续
+read(11, 0x7f1ed80f2890, 1024)          = -1 EAGAIN (Resource temporarily unavailable)
+### ...
+~~~
+
 
 
