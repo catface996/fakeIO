@@ -71,7 +71,7 @@ public class FileIO {
             mappedByteBuffer.force();
         }
         long end = System.currentTimeMillis();
-        log.info("write success.duration:{}", end - start);
+        System.out.println("write success.duration:" + (end - start));
         // 5745 ms 写入 5.24G
     }
 }
