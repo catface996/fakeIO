@@ -1,4 +1,6 @@
-# io
+# fakeIO
+
+IO相关内容
 
 ## linux 系统调函数
 
@@ -32,3 +34,20 @@ TIME_WAIT 2倍的MSL,先发起关闭的一端等待,因为最后一次ACK未必�
 net.ipv4.tcp_tw_reuse = 2
 ## 将net.ipv4.tcp_tw_reuse 配置成1可以快速重复使用
 ~~~
+
+## [Buffer](src/main/java/com/io/buffer/README.md)
+
+
+
+## [FileIO](src/main/java/com/io/file/README.md)
+
+
+
+## [Socket](src/main/java/com/io/netty/README.md)
+
+
+
+## [Netty](src/main/java/com/io/netty/README.md)
+
+
+
