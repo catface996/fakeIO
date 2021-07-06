@@ -18,19 +18,19 @@ PS:在NIO中,accept(),recv(),read()执行都是同步的,例如read(),在执行�
 
 
 
-## [十万连接](src/main/java/com/io/socket/_2十万连接/README.md)
+## [十万连接](./_2十万连接/README.md)
 
 
 
-## [BIO](src/main/java/com/io/socket/_2十万连接/README.md)
+## [BIO](./_3bio/README.md)
 
 
 
-## [NIO](src/main/java/com/io/socket/_2十万连接/README.md)
+## [NIO](./_3nio/README.md)
 
 
 
-## [Selector](src/main/java/com/io/socket/_2十万连接/README.md)
+## [Selector](./_4selector/README.md)
 
-### [SelectGroup](src/main/java/com/io/socket/_2十万连接/README.md)
+### [SelectGroup](./_4selectorGroup/README.md)
 
