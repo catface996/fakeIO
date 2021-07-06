@@ -12,3 +12,25 @@
 PS:在NIO中,accept(),recv(),read()执行都是同步的,例如read(),在执行读取时,如果有数据,当前线程将被阻塞到内核返回读取的数据结束.但是如果内核告诉线程当前无可读取的数据,调用read()
 的线程将会继续执行,不会阻塞.
 
+
+
+## [Socket基本流程](src/main/java/com/io/netty/README.md)
+
+
+
+## [十万连接](src/main/java/com/io/socket/_2十万连接/README.md)
+
+
+
+## [BIO](src/main/java/com/io/socket/_2十万连接/README.md)
+
+
+
+## [NIO](src/main/java/com/io/socket/_2十万连接/README.md)
+
+
+
+## [Selector](src/main/java/com/io/socket/_2十万连接/README.md)
+
+### [SelectGroup](src/main/java/com/io/socket/_2十万连接/README.md)
+
